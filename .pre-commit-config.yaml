@@ -40,6 +40,14 @@ repos:
       - id: isort
         name: Trier les imports Python
 
+  # mypy - Vérification de types statiques
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        name: Vérifier les types avec mypy
+        additional_dependencies: [pandas-stubs, types-openpyxl]
+
   # pytest - Exécuter les tests
   - repo: local
     hooks:
