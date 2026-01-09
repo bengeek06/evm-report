@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 *.egg-info
+evm_report.egg-info/
 
 # Ignorer les venv
 .venv/
