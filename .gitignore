@@ -1,6 +1,21 @@
 # Ignorer tout par défaut
 *
 
+# Ignorer les caches Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorer les fichiers temporaires de pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Garder les répertoires de code source
+!tests/
+!tests/**
+
 # Garder les fichiers Python
 !*.py
 
