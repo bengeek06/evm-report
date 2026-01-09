@@ -144,6 +144,16 @@ def calculer_depenses_cumulees(df, colonne_date="Date", colonne_montant="Montant
         colonne_date: nom de la colonne contenant les dates
         colonne_montant: nom de la colonne contenant les montants
     """
+    # Vérifications des données
+    if df is None or df.empty:
+        return pd.Series(dtype=float)
+
+    if colonne_date not in df.columns:
+        raise KeyError(f"La colonne '{colonne_date}' est absente du DataFrame")
+
+    if colonne_montant not in df.columns:
+        raise KeyError(f"La colonne '{colonne_montant}' est absente du DataFrame")
+
     # Copie du dataframe pour éviter les modifications
     df_work = df.copy()
 

@@ -17,3 +17,8 @@ htmlcov/
 
 # Ignorer les datas
 datas/
+
+# Ignorer les rapports générés
+reports/
+
+.vscode/
