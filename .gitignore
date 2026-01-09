@@ -1,0 +1,18 @@
+# Ignorer tout par défaut
+*
+
+# Garder les fichiers Python
+!*.py
+
+# Garder les fichiers Markdown
+!*.md
+
+# Garder requirements.txt
+!requirements.txt
+
+# Garder les modèles Excel
+!*_model.xlsx
+
+# Garder le .gitignore lui-même
+!.gitignore
+
