@@ -47,11 +47,11 @@ Le script calcule maintenant automatiquement 3 scénarios de projection selon de
 - **Méthode CPI (Optimiste)** : `EAC = BAC / CPI`
   - Suppose que la performance des coûts actuelle se poursuit
   - Généralement le scénario le plus optimiste
-  
+
 - **Méthode CPI×SPI (Réaliste)** : `EAC = AC + [(BAC - EV) / (CPI × SPI)]`
   - Prend en compte à la fois la performance des coûts ET des délais
   - Scénario le plus réaliste et couramment utilisé
-  
+
 - **Méthode Reste à Plan (Pessimiste)** : `EAC = AC + (BAC - EV)`
   - Suppose que le reste se déroule exactement comme prévu initialement
   - Généralement le scénario le plus pessimiste si le projet a des problèmes

@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evm-report"
+version = "2.1.0"
+description = "Analyse EVM automatisée avec calcul des indicateurs de performance, projections et rapports Word"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Benjamin", email = "bengeek06@users.noreply.github.com"}
+]
+keywords = ["evm", "earned-value-management", "project-management", "reporting", "analysis"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Office/Business :: Scheduling",
+]
+
+dependencies = [
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "matplotlib>=3.7.0",
+    "python-docx>=0.8.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/bengeek06/evm-report"
+Repository = "https://github.com/bengeek06/evm-report"
+Issues = "https://github.com/bengeek06/evm-report/issues"
+
+[project.scripts]
+evm-report = "analyse:main"
+
+[tool.setuptools]
+py-modules = ["analyse"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+
+[tool.coverage.run]
+source = ["analyse"]
+omit = ["tests/*", ".venv/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "DTZ", "T10", "ICN", "PIE", "PT", "RET", "SIM", "ARG", "PTH", "PD", "PL", "NPY"]
+ignore = ["E501", "PLR0913", "PLR2004", "PLR0912", "PLR0915", "C901", "PD901"]  # PD901: df est un nom acceptable pour les DataFrames
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["DTZ001"]  # datetime() sans timezone OK pour les tests (Excel ne supporte pas les timezones)
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+ignore_missing_imports = true
+allow_untyped_defs = true
+allow_incomplete_defs = true
+no_implicit_optional = false

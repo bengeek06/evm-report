@@ -18,10 +18,10 @@ Le script calcule **3 scénarios de projection** automatiquement :
 
 1. **Méthode CPI (Optimiste)** : `BAC / CPI`
    - La performance des coûts actuelle se poursuit
-   
+
 2. **Méthode CPI×SPI (Réaliste)** : `AC + [(BAC-EV) / (CPI×SPI)]`
    - Performance coûts ET délais se poursuit
-   
+
 3. **Méthode Reste à Plan (Pessimiste)** : `AC + (BAC-EV)`
    - Le reste se déroule comme prévu initialement
 
@@ -59,8 +59,11 @@ source .venv/bin/activate  # Linux/Mac
 # ou
 .venv\Scripts\activate     # Windows
 
-# Installer les dépendances
-pip install -r requirements.txt
+# Installer le projet et ses dépendances
+pip install -e .
+
+# Ou installer uniquement les dépendances de développement
+pip install -e ".[dev]"
 ```
 
 ## Structure des fichiers d'entrée
@@ -224,11 +227,15 @@ EAC Pessimiste = 1 916 k€
 
 ## Dépendances
 
-Voir [requirements.txt](requirements.txt) :
+Voir [pyproject.toml](pyproject.toml) :
+
+**Dépendances principales :**
 - pandas >= 2.0.0
 - openpyxl >= 3.1.0
 - matplotlib >= 3.7.0
 - python-docx >= 0.8.11
+
+**Dépendances de développement :**
 - pytest >= 7.4.0 (tests)
 - pytest-cov >= 4.1.0 (tests)
 
