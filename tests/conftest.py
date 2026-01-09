@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 @pytest.fixture
-def sample_export_sap():
+def sample_export_sap() -> pd.DataFrame:
     """Fixture pour un export SAP exemple"""
     return pd.DataFrame(
         {
@@ -26,7 +26,7 @@ def sample_export_sap():
 
 
 @pytest.fixture
-def sample_pv():
+def sample_pv() -> pd.DataFrame:
     """Fixture pour un fichier PV exemple"""
     return pd.DataFrame(
         {
@@ -40,7 +40,7 @@ def sample_pv():
 
 
 @pytest.fixture
-def sample_va():
+def sample_va() -> pd.DataFrame:
     """Fixture pour un fichier VA exemple"""
     data: dict[str | datetime, list] = {
         "Jalon": ["RCD", "J1", "J2"],
@@ -63,7 +63,7 @@ def sample_va():
 
 
 @pytest.fixture
-def sample_forecast():
+def sample_forecast() -> pd.DataFrame:
     """Fixture pour un fichier forecast exemple"""
     return pd.DataFrame(
         {
@@ -77,18 +77,18 @@ def sample_forecast():
 
 
 @pytest.fixture
-def sample_depenses_cumulees():
+def sample_depenses_cumulees() -> pd.Series:
     """Fixture pour des dépenses cumulées exemple"""
     return pd.Series([50000, 100000, 180000, 250000], index=pd.period_range("2025-01", periods=4, freq="M"))
 
 
 @pytest.fixture
-def sample_ev_cumulee():
+def sample_ev_cumulee() -> pd.Series:
     """Fixture pour une EV cumulée exemple"""
     return pd.Series([30000, 70000, 120000, 180000], index=pd.period_range("2025-01", periods=4, freq="M"))
 
 
 @pytest.fixture
-def sample_pv_cumulee():
+def sample_pv_cumulee() -> pd.Series:
     """Fixture pour une PV cumulée exemple"""
     return pd.Series([40000, 90000, 140000, 200000], index=pd.period_range("2025-01", periods=4, freq="M"))
