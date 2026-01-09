@@ -220,6 +220,7 @@ def tracer_courbe(
 
     plt.tight_layout()
     plt.savefig(fichier_sortie, dpi=300, bbox_inches="tight")
+    plt.close()
     print(f"Graphique sauvegardé: {fichier_sortie}")
 
 
@@ -397,6 +398,7 @@ def tracer_courbe_realise(
 
     plt.tight_layout()
     plt.savefig(fichier_sortie, dpi=300, bbox_inches="tight")
+    plt.close()
     print(f"✓ Graphique du réalisé sauvegardé: {fichier_sortie}")
 
 
@@ -503,4 +505,5 @@ def tracer_courbe_projections(depenses_cumulees, ev_cumulee, projections, fichie
 
     plt.tight_layout()
     plt.savefig(fichier_sortie, dpi=300, bbox_inches="tight")
+    plt.close()
     print(f"✓ Graphique des projections sauvegardé: {fichier_sortie}")
