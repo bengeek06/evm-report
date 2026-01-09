@@ -78,15 +78,15 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class TestMaFonction:
     """Tests pour ma_fonction"""
-    
+
     def test_cas_nominal(self):
         """Test du cas nominal"""
         # Arrange
         donnees = ...
-        
+
         # Act
         resultat = ma_fonction(donnees)
-        
+
         # Assert
         assert resultat == valeur_attendue
 ```

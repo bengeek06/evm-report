@@ -1,6 +1,7 @@
 """
 Tests pour les fonctions de lecture des fichiers Excel
 """
+
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -19,11 +20,13 @@ class TestLectureExport:
         """Test de lecture d'un fichier SAP valide"""
         # Créer un fichier Excel temporaire
         fichier = tmp_path / "export_test.xlsx"
-        df = pd.DataFrame({
-            "Date de la pièce": [datetime(2025, 1, 15), datetime(2025, 2, 20)],
-            "Val./Devise objet": [15000.50, 25000.75],
-            "Autre colonne": ["A", "B"]
-        })
+        df = pd.DataFrame(
+            {
+                "Date de la pièce": [datetime(2025, 1, 15), datetime(2025, 2, 20)],
+                "Val./Devise objet": [15000.50, 25000.75],
+                "Autre colonne": ["A", "B"],
+            }
+        )
         df.to_excel(fichier, index=False)
 
         # Tester la lecture
@@ -43,10 +46,7 @@ class TestLectureExport:
     def test_lire_export_sap_colonnes_manquantes(self, tmp_path):
         """Test avec des colonnes manquantes"""
         fichier = tmp_path / "export_invalide.xlsx"
-        df = pd.DataFrame({
-            "Mauvaise colonne": [1, 2, 3],
-            "Autre colonne": ["A", "B", "C"]
-        })
+        df = pd.DataFrame({"Mauvaise colonne": [1, 2, 3], "Autre colonne": ["A", "B", "C"]})
         df.to_excel(fichier, index=False)
 
         result = lire_export_sap(str(fichier))
@@ -60,13 +60,15 @@ class TestLecturePlannedValue:
     def test_lire_pv_valide(self, tmp_path):
         """Test de lecture d'un fichier PV valide"""
         fichier = tmp_path / "pv_test.xlsx"
-        df = pd.DataFrame({
-            "Jalon": ["RCD", "J1", "J2"],
-            "Durée (mois)": [3, 5, 4],
-            "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31), datetime(2025, 12, 31)],
-            "Montant planifié": [100000, 200000, 250000],
-            "Cumul planifié": [100000, 300000, 550000]
-        })
+        df = pd.DataFrame(
+            {
+                "Jalon": ["RCD", "J1", "J2"],
+                "Durée (mois)": [3, 5, 4],
+                "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31), datetime(2025, 12, 31)],
+                "Montant planifié": [100000, 200000, 250000],
+                "Cumul planifié": [100000, 300000, 550000],
+            }
+        )
         df.to_excel(fichier, index=False)
 
         result = lire_planned_value(str(fichier))
@@ -93,7 +95,7 @@ class TestLectureValeurAcquise:
             "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31)],
             "Montant planifié": [100000, 200000],
             datetime(2025, 1, 1): [0.2, 0.0],
-            datetime(2025, 2, 1): [0.5, 0.0]
+            datetime(2025, 2, 1): [0.5, 0.0],
         }
         df = pd.DataFrame(data)
         df.to_excel(fichier, index=False)
@@ -116,13 +118,15 @@ class TestLectureForecast:
     def test_lire_forecast_valide(self, tmp_path):
         """Test de lecture d'un fichier forecast valide"""
         fichier = tmp_path / "forecast_test.xlsx"
-        df = pd.DataFrame({
-            "Jalon": ["J3", "J4"],
-            "Date projetée": [datetime(2026, 7, 31), datetime(2026, 10, 31)],
-            "EAC (€)": [420000, 230000],
-            "ETC (€)": [420000, 230000],
-            "Commentaire": ["Test 1", "Test 2"]
-        })
+        df = pd.DataFrame(
+            {
+                "Jalon": ["J3", "J4"],
+                "Date projetée": [datetime(2026, 7, 31), datetime(2026, 10, 31)],
+                "EAC (€)": [420000, 230000],
+                "ETC (€)": [420000, 230000],
+                "Commentaire": ["Test 1", "Test 2"],
+            }
+        )
         df.to_excel(fichier, index=False)
 
         result = lire_forecast(str(fichier))

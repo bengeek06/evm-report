@@ -43,6 +43,7 @@ dev = [
     "ruff>=0.1.0",
     "isort>=5.12.0",
     "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
 ]
 
 [project.urls]
@@ -82,7 +83,7 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "DTZ", "T10", "ICN", "PIE", "PT", "RET", "SIM", "ARG", "PTH", "PD", "PL", "NPY"]
-ignore = ["E501", "PLR0913", "PLR2004", "PLR0912", "PLR0915", "C901"]
+ignore = ["E501", "PLR0913", "PLR2004", "PLR0912", "PLR0915", "C901", "PD901"]  # PD901: df est un nom acceptable pour les DataFrames
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["DTZ001"]  # datetime() sans timezone OK pour les tests (Excel ne supporte pas les timezones)
@@ -99,4 +100,3 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 check_untyped_defs = true
 ignore_missing_imports = true
-

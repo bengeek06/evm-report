@@ -18,10 +18,10 @@ Le script calcule **3 scénarios de projection** automatiquement :
 
 1. **Méthode CPI (Optimiste)** : `BAC / CPI`
    - La performance des coûts actuelle se poursuit
-   
+
 2. **Méthode CPI×SPI (Réaliste)** : `AC + [(BAC-EV) / (CPI×SPI)]`
    - Performance coûts ET délais se poursuit
-   
+
 3. **Méthode Reste à Plan (Pessimiste)** : `AC + (BAC-EV)`
    - Le reste se déroule comme prévu initialement
 

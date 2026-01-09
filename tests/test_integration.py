@@ -1,6 +1,7 @@
 """
 Tests d'intégration pour le workflow complet
 """
+
 import sys
 from pathlib import Path
 
@@ -66,7 +67,7 @@ class TestWorkflowComplet:
 
         projections_data, _, _ = projections
         assert len(projections_data) == 3  # CPI, CPI_SPI, RESTE_PLAN
-        assert all(k in projections_data for k in ['CPI', 'CPI_SPI', 'RESTE_PLAN'])
+        assert all(k in projections_data for k in ["CPI", "CPI_SPI", "RESTE_PLAN"])
 
     def test_workflow_minimal_sans_forecast(self, tmp_path, sample_export_sap, sample_pv, sample_va):
         """Test du workflow minimal sans fichier forecast"""

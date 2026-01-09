@@ -1,6 +1,7 @@
 """
 Tests pour les calculs EVM (AC, PV, EV)
 """
+
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -17,14 +18,12 @@ class TestCalculDepensesCumulees:
 
     def test_depenses_cumulees_simple(self):
         """Test avec des dépenses simples"""
-        df = pd.DataFrame({
-            "Date de la pièce": [
-                datetime(2025, 1, 15),
-                datetime(2025, 1, 20),
-                datetime(2025, 2, 10)
-            ],
-            "Val./Devise objet": [10000, 5000, 8000]
-        })
+        df = pd.DataFrame(
+            {
+                "Date de la pièce": [datetime(2025, 1, 15), datetime(2025, 1, 20), datetime(2025, 2, 10)],
+                "Val./Devise objet": [10000, 5000, 8000],
+            }
+        )
 
         result = calculer_depenses_cumulees(df, "Date de la pièce", "Val./Devise objet")
 
@@ -35,14 +34,12 @@ class TestCalculDepensesCumulees:
 
     def test_depenses_cumulees_meme_mois(self):
         """Test avec plusieurs dépenses le même mois"""
-        df = pd.DataFrame({
-            "Date de la pièce": [
-                datetime(2025, 3, 5),
-                datetime(2025, 3, 15),
-                datetime(2025, 3, 25)
-            ],
-            "Val./Devise objet": [1000, 2000, 3000]
-        })
+        df = pd.DataFrame(
+            {
+                "Date de la pièce": [datetime(2025, 3, 5), datetime(2025, 3, 15), datetime(2025, 3, 25)],
+                "Val./Devise objet": [1000, 2000, 3000],
+            }
+        )
 
         result = calculer_depenses_cumulees(df, "Date de la pièce", "Val./Devise objet")
 
@@ -51,10 +48,7 @@ class TestCalculDepensesCumulees:
 
     def test_depenses_cumulees_vide(self):
         """Test avec un DataFrame vide"""
-        df = pd.DataFrame({
-            "Date de la pièce": [],
-            "Val./Devise objet": []
-        })
+        df = pd.DataFrame({"Date de la pièce": [], "Val./Devise objet": []})
 
         result = calculer_depenses_cumulees(df, "Date de la pièce", "Val./Devise objet")
 
@@ -67,12 +61,14 @@ class TestTraiterPlannedValue:
 
     def test_pv_avec_interpolation(self):
         """Test de l'interpolation linéaire de la PV"""
-        df_pv = pd.DataFrame({
-            "Jalon": ["RCD", "J1"],
-            "Date": [datetime(2025, 3, 31), datetime(2025, 6, 30)],
-            "Montant planifié": [100000, 200000],
-            "Cumul planifié": [100000, 300000]
-        })
+        df_pv = pd.DataFrame(
+            {
+                "Jalon": ["RCD", "J1"],
+                "Date": [datetime(2025, 3, 31), datetime(2025, 6, 30)],
+                "Montant planifié": [100000, 200000],
+                "Cumul planifié": [100000, 300000],
+            }
+        )
 
         result = traiter_planned_value(df_pv)
 
@@ -82,18 +78,13 @@ class TestTraiterPlannedValue:
         # Vérifier que l'interpolation a créé des valeurs pour les mois intermédiaires
         assert len(pv_cumulee) > 2
         # La PV doit être croissante (utiliser iloc pour éviter FutureWarning)
-        assert all(pv_cumulee.iloc[i] <= pv_cumulee.iloc[i+1] for i in range(len(pv_cumulee)-1))
+        assert all(pv_cumulee.iloc[i] <= pv_cumulee.iloc[i + 1] for i in range(len(pv_cumulee) - 1))
         # Les jalons doivent être présents
         assert jalons is not None
 
     def test_pv_sans_donnees(self):
         """Test avec un DataFrame PV vide"""
-        df_pv = pd.DataFrame({
-            "Jalon": [],
-            "Date": [],
-            "Montant planifié": [],
-            "Cumul planifié": []
-        })
+        df_pv = pd.DataFrame({"Jalon": [], "Date": [], "Montant planifié": [], "Cumul planifié": []})
 
         result = traiter_planned_value(df_pv)
         # La fonction retourne un tuple vide avec des Series/dict vides
@@ -108,22 +99,26 @@ class TestCalculerEarnedValue:
 
     def test_ev_simple(self):
         """Test du calcul de l'EV avec des pourcentages simples"""
-        df_pv = pd.DataFrame({
-            "Jalon": ["RCD", "J1"],
-            "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31)],
-            "Montant planifié": [100000, 200000],
-            "Cumul planifié": [100000, 300000]
-        })
+        df_pv = pd.DataFrame(
+            {
+                "Jalon": ["RCD", "J1"],
+                "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31)],
+                "Montant planifié": [100000, 200000],
+                "Cumul planifié": [100000, 300000],
+            }
+        )
 
-        df_va = pd.DataFrame({
-            "Jalon": ["RCD", "J1"],
-            "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31)],
-            "Montant planifié": [100000, 200000],
-            datetime(2025, 1, 1): [0.0, 0.0],
-            datetime(2025, 2, 1): [0.5, 0.0],  # RCD à 50%
-            datetime(2025, 3, 1): [1.0, 0.0],  # RCD à 100%
-            datetime(2025, 4, 1): [1.0, 0.2],  # RCD 100%, J1 20%
-        })
+        df_va = pd.DataFrame(
+            {
+                "Jalon": ["RCD", "J1"],
+                "Date": [datetime(2025, 3, 31), datetime(2025, 8, 31)],
+                "Montant planifié": [100000, 200000],
+                datetime(2025, 1, 1): [0.0, 0.0],
+                datetime(2025, 2, 1): [0.5, 0.0],  # RCD à 50%
+                datetime(2025, 3, 1): [1.0, 0.0],  # RCD à 100%
+                datetime(2025, 4, 1): [1.0, 0.2],  # RCD 100%, J1 20%
+            }
+        )
 
         result = calculer_earned_value(df_pv, df_va)
 
@@ -141,20 +136,24 @@ class TestCalculerEarnedValue:
 
     def test_ev_pourcentages_invalides(self):
         """Test avec des pourcentages > 1.0"""
-        df_pv = pd.DataFrame({
-            "Jalon": ["RCD"],
-            "Date": [datetime(2025, 3, 31)],
-            "Montant planifié": [100000],
-            "Cumul planifié": [100000]
-        })
+        df_pv = pd.DataFrame(
+            {
+                "Jalon": ["RCD"],
+                "Date": [datetime(2025, 3, 31)],
+                "Montant planifié": [100000],
+                "Cumul planifié": [100000],
+            }
+        )
 
-        df_va = pd.DataFrame({
-            "Jalon": ["RCD"],
-            "Date": [datetime(2025, 3, 31)],
-            "Montant planifié": [100000],
-            datetime(2025, 1, 1): [0.5],
-            datetime(2025, 2, 1): [1.5],  # Plus de 100% - invalide mais géré
-        })
+        df_va = pd.DataFrame(
+            {
+                "Jalon": ["RCD"],
+                "Date": [datetime(2025, 3, 31)],
+                "Montant planifié": [100000],
+                datetime(2025, 1, 1): [0.5],
+                datetime(2025, 2, 1): [1.5],  # Plus de 100% - invalide mais géré
+            }
+        )
 
         result = calculer_earned_value(df_pv, df_va)
 
@@ -163,12 +162,14 @@ class TestCalculerEarnedValue:
 
     def test_ev_sans_va(self):
         """Test sans fichier VA"""
-        df_pv = pd.DataFrame({
-            "Jalon": ["RCD"],
-            "Date": [datetime(2025, 3, 31)],
-            "Montant planifié": [100000],
-            "Cumul planifié": [100000]
-        })
+        df_pv = pd.DataFrame(
+            {
+                "Jalon": ["RCD"],
+                "Date": [datetime(2025, 3, 31)],
+                "Montant planifié": [100000],
+                "Cumul planifié": [100000],
+            }
+        )
 
         result = calculer_earned_value(df_pv, None)
         assert result is None
