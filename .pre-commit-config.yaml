@@ -1,0 +1,60 @@
+# Configuration pre-commit pour evm-report
+# Installer: pre-commit install
+# Exécuter manuellement: pre-commit run --all-files
+
+repos:
+  # Hooks standards de pre-commit
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        name: Supprimer les espaces en fin de ligne
+      - id: end-of-file-fixer
+        name: Assurer une ligne vide à la fin des fichiers
+      - id: check-yaml
+        name: Vérifier la syntaxe YAML
+      - id: check-added-large-files
+        name: Vérifier qu'aucun gros fichier n'est ajouté
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+        name: Vérifier les marqueurs de conflit de merge
+      - id: check-toml
+        name: Vérifier la syntaxe TOML
+      - id: mixed-line-ending
+        name: Vérifier la cohérence des fins de ligne
+
+  # Ruff - Linter et formatter Python ultra-rapide
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.5
+    hooks:
+      - id: ruff
+        name: Ruff linter
+        args: [--fix]
+      - id: ruff-format
+        name: Ruff formatter
+
+  # isort - Tri des imports Python
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: Trier les imports Python
+
+  # mypy - Vérification de types statiques
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        name: Vérifier les types avec mypy
+        additional_dependencies: [pandas-stubs, types-openpyxl]
+
+  # pytest - Exécuter les tests
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Exécuter les tests pytest
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+        args: ["-q"]

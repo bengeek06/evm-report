@@ -97,7 +97,7 @@ pytest tests/test_calculs_evm.py -v
 
 Pour augmenter la couverture de code, considérer :
 
-1. **Tests des graphiques** : 
+1. **Tests des graphiques** :
    - Utiliser `unittest.mock` pour mocker matplotlib
    - Vérifier que les données sont correctement passées aux fonctions de plotting
 
