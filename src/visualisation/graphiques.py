@@ -220,7 +220,7 @@ def _finalize_plot(*, title: str, fichier_sortie: str, print_msg: str) -> None:
     plt.gcf().autofmt_xdate()
     plt.tight_layout()
     plt.savefig(fichier_sortie, dpi=300, bbox_inches="tight")
-    plt.close()
+    plt.close(plt.gcf())
     print(print_msg)
 
 
