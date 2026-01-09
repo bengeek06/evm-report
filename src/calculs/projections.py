@@ -5,6 +5,96 @@ Module de calcul des projections EVM
 import pandas as pd
 
 
+def _compute_indices(*, ac_actuel: float, ev_actuel: float, pv_actuel: float) -> tuple[float, float]:
+    cpi = ev_actuel / ac_actuel if ac_actuel > 0 else 1
+    spi = ev_actuel / pv_actuel if pv_actuel > 0 else 1
+    return cpi, spi
+
+
+def _estimate_finish_date(dernier_mois: pd.Period, pv_cumulee: pd.Series | None, spi: float) -> pd.Period:
+    if pv_cumulee is not None and spi > 0:
+        dernier_mois_pv = pv_cumulee.index[-1]
+        mois_restants_plan = (dernier_mois_pv.to_timestamp().year - dernier_mois.to_timestamp().year) * 12 + (
+            dernier_mois_pv.to_timestamp().month - dernier_mois.to_timestamp().month
+        )
+        mois_restants_proj = int(mois_restants_plan / spi)
+        return dernier_mois + mois_restants_proj
+    return dernier_mois + 12
+
+
+def _build_projection_series(
+    depenses_cumulees: pd.Series,
+    *,
+    dernier_mois: pd.Period,
+    ac_actuel: float,
+    reste: float,
+    date_fin_proj: pd.Period,
+) -> pd.Series:
+    mois_projection = pd.period_range(start=dernier_mois, end=date_fin_proj, freq="M")
+
+    serie = pd.Series(dtype=float)
+    for mois in depenses_cumulees.index:
+        serie[mois] = depenses_cumulees[mois]
+
+    if len(mois_projection) > 1:
+        nb_mois = len(mois_projection) - 1
+        increment = reste / nb_mois if nb_mois > 0 else 0
+        valeur_actuelle = ac_actuel
+        for mois in mois_projection:
+            if mois > dernier_mois:
+                valeur_actuelle += increment
+                serie[mois] = valeur_actuelle  # type: ignore[index]
+
+    return serie.sort_index()
+
+
+def _parse_forecast_eac_par_jalon(df_forecast: pd.DataFrame) -> dict:
+    eac_par_jalon: dict = {}
+    for _, row in df_forecast.iterrows():
+        jalon = row["Jalon"]
+        date_projetee = row["Date projetée"]
+        eac = row["EAC (€)"]
+
+        if isinstance(date_projetee, pd.Timestamp):
+            mois_proj = date_projetee.to_period("M")
+        else:
+            mois_proj = pd.to_datetime(date_projetee).to_period("M")
+
+        eac_par_jalon[jalon] = {"date": mois_proj, "eac": eac}
+    return eac_par_jalon
+
+
+def _build_eac_series(
+    ev_cumulee: pd.Series,
+    eac_par_jalon: dict,
+) -> pd.Series | None:
+    dernier_mois_ev = ev_cumulee.index[-1]
+    ev_finale = ev_cumulee.iloc[-1]
+
+    mois_projection = sorted({info["date"] for info in eac_par_jalon.values()})
+    if not mois_projection:
+        return None
+
+    eac_par_mois: dict[pd.Period, float] = {}
+    for mois in mois_projection:
+        if mois <= dernier_mois_ev:
+            if mois in ev_cumulee.index:
+                eac_par_mois[mois] = float(ev_cumulee[mois])
+            continue
+
+        eac_cumul = float(ev_finale)
+        for _jalon, info in eac_par_jalon.items():
+            if info["date"] <= mois:
+                eac_cumul += float(info["eac"])
+        eac_par_mois[mois] = eac_cumul
+        print(f"Mois {mois}: EAC projeté = {eac_cumul:.2f}€")
+
+    if not eac_par_mois:
+        return None
+
+    return pd.Series(eac_par_mois).sort_index()
+
+
 def calculer_projections_automatiques(depenses_cumulees, ev_cumulee, pv_cumulee, _df_pv):
     """
     Calcule automatiquement les projections EAC selon différentes méthodes EVM
@@ -22,11 +112,8 @@ def calculer_projections_automatiques(depenses_cumulees, ev_cumulee, pv_cumulee,
     # Budget à complétion (BAC)
     bac = pv_cumulee.iloc[-1] if pv_cumulee is not None else 0
 
-    # Calcul des indices de performance
-    cpi = ev_actuel / ac_actuel if ac_actuel > 0 else 1
-
     pv_actuel = pv_cumulee[dernier_mois] if pv_cumulee is not None and dernier_mois in pv_cumulee.index else 0
-    spi = ev_actuel / pv_actuel if pv_actuel > 0 else 1
+    cpi, spi = _compute_indices(ac_actuel=ac_actuel, ev_actuel=ev_actuel, pv_actuel=pv_actuel)
 
     # Calcul des EAC selon différentes méthodes
     projections = {}
@@ -58,43 +145,17 @@ def calculer_projections_automatiques(depenses_cumulees, ev_cumulee, pv_cumulee,
         "reste": bac - ev_actuel,
     }
 
-    # Estimation de la date de fin basée sur SPI
-    if pv_cumulee is not None and spi > 0:
-        dernier_mois_pv = pv_cumulee.index[-1]
-        mois_restants_plan = (dernier_mois_pv.to_timestamp().year - dernier_mois.to_timestamp().year) * 12 + (
-            dernier_mois_pv.to_timestamp().month - dernier_mois.to_timestamp().month
-        )
-        mois_restants_proj = int(mois_restants_plan / spi)
-        date_fin_proj = dernier_mois + mois_restants_proj
-    else:
-        date_fin_proj = dernier_mois + 12  # Par défaut +12 mois
-
-    # Générer les séries temporelles pour chaque projection
-    mois_projection = pd.period_range(start=dernier_mois, end=date_fin_proj, freq="M")
+    date_fin_proj = _estimate_finish_date(dernier_mois, pv_cumulee, spi)
 
     series_projections = {}
     for methode, data in projections.items():
-        # Série avec AC historique + projection linéaire jusqu'à EAC
-        serie = pd.Series(dtype=float)
-
-        # Ajouter l'historique AC
-        for mois in depenses_cumulees.index:
-            serie[mois] = depenses_cumulees[mois]
-
-        # Ajouter la projection linéaire
-        if len(mois_projection) > 1:
-            reste = data["reste"]
-            nb_mois = len(mois_projection) - 1
-            increment = reste / nb_mois if nb_mois > 0 else 0
-
-            valeur_actuelle = ac_actuel
-            for _i, mois in enumerate(mois_projection):
-                if mois > dernier_mois:
-                    valeur_actuelle += increment
-                    serie[mois] = valeur_actuelle  # type: ignore[index]
-
-        serie = serie.sort_index()
-        series_projections[methode] = serie
+        series_projections[methode] = _build_projection_series(
+            depenses_cumulees,
+            dernier_mois=dernier_mois,
+            ac_actuel=float(ac_actuel),
+            reste=float(data["reste"]),
+            date_fin_proj=date_fin_proj,
+        )
 
         print(f"Méthode {methode}: EAC = {data['eac']:,.2f} € (Reste: {data['reste']:,.2f} €)")
 
@@ -115,61 +176,11 @@ def calculer_eac_projete(ev_cumulee, df_forecast, df_pv):
         print("⚠️  Colonnes manquantes dans forecast.xlsx")
         return None
 
-    # Créer un dictionnaire des montants EAC par jalon
-    eac_par_jalon = {}
-    for _, row in df_forecast.iterrows():
-        jalon = row["Jalon"]
-        date_projetee = row["Date projetée"]
-        eac = row["EAC (€)"]
-
-        # Convertir en period si nécessaire
-        if isinstance(date_projetee, pd.Timestamp):
-            mois_proj = date_projetee.to_period("M")
-        else:
-            mois_proj = pd.to_datetime(date_projetee).to_period("M")
-
-        eac_par_jalon[jalon] = {"date": mois_proj, "eac": eac}
-
-    # Récupérer tous les jalons avec leur montant planifié
-    jalons_pv = {}
-    for _, row in df_pv.iterrows():
-        jalon = row["Jalon"]
-        montant = row["Montant planifié"] if "Montant planifié" in df_pv.columns else 0
-        jalons_pv[jalon] = montant
-
-    # Créer une série temporelle pour l'EAC projeté
-    # On commence avec l'EV actuelle
-    dernier_mois_ev = ev_cumulee.index[-1]
-    ev_finale = ev_cumulee.iloc[-1]
-
-    # Collecter tous les mois de projection
-    mois_projection = set()
-    for info in eac_par_jalon.values():
-        mois_projection.add(info["date"])
-
-    mois_projection = sorted(mois_projection)
-
-    # Calculer l'EAC cumulé mois par mois
-    eac_par_mois = {}
-
-    for mois in mois_projection:
-        if mois <= dernier_mois_ev:
-            # Pour les mois passés, on garde l'EV
-            if mois in ev_cumulee.index:
-                eac_par_mois[mois] = ev_cumulee[mois]
-        else:
-            # Pour les mois futurs, on accumule l'EAC
-            eac_cumul = ev_finale
-            for _jalon, info in eac_par_jalon.items():
-                if info["date"] <= mois:
-                    eac_cumul += info["eac"]
-            eac_par_mois[mois] = eac_cumul
-            print(f"Mois {mois}: EAC projeté = {eac_cumul:.2f}€")
-
-    if not eac_par_mois:
+    eac_par_jalon = _parse_forecast_eac_par_jalon(df_forecast)
+    eac_series = _build_eac_series(ev_cumulee, eac_par_jalon)
+    if eac_series is None:
         return None
 
-    eac_series = pd.Series(eac_par_mois).sort_index()
     print(f"✓ EAC projeté calculé pour {len(eac_series)} mois")
 
     return eac_series, eac_par_jalon

@@ -4,6 +4,11 @@ Module d'écriture de fichiers (CSV, Excel)
 
 import pandas as pd
 
+# Constantes pour les noms de colonnes
+COL_EV = "EV (Valeur acquise)"
+COL_PV = "PV (Budget prévu)"
+COL_AC = "AC (Dépenses réelles)"
+
 
 def generer_tableau_comparatif(depenses_cumulees, pv_cumulee=None, ev_cumulee=None, nom_base="tableau_evm"):
     """
@@ -21,25 +26,21 @@ def generer_tableau_comparatif(depenses_cumulees, pv_cumulee=None, ev_cumulee=No
     # Créer le tableau
     data = {
         "Mois": [str(p) for p in toutes_periodes],
-        "AC (Dépenses réelles)": [depenses_cumulees.get(p, 0) for p in toutes_periodes],
+        COL_AC: [depenses_cumulees.get(p, 0) for p in toutes_periodes],
     }
 
     if pv_cumulee is not None:
-        data["PV (Budget prévu)"] = [pv_cumulee.get(p, 0) for p in toutes_periodes]
+        data[COL_PV] = [pv_cumulee.get(p, 0) for p in toutes_periodes]
 
     if ev_cumulee is not None:
-        data["EV (Valeur acquise)"] = [ev_cumulee.get(p, 0) for p in toutes_periodes]
+        data[COL_EV] = [ev_cumulee.get(p, 0) for p in toutes_periodes]
 
     df_tableau = pd.DataFrame(data)
 
     # Calculer les écarts si toutes les valeurs sont disponibles
     if pv_cumulee is not None and ev_cumulee is not None:
-        df_tableau["SV (Schedule Variance)"] = df_tableau.get("EV (Valeur acquise)", 0) - df_tableau.get(
-            "PV (Budget prévu)", 0
-        )
-        df_tableau["CV (Cost Variance)"] = (
-            df_tableau.get("EV (Valeur acquise)", 0) - df_tableau["AC (Dépenses réelles)"]
-        )
+        df_tableau["SV (Schedule Variance)"] = df_tableau.get(COL_EV, 0) - df_tableau.get(COL_PV, 0)
+        df_tableau["CV (Cost Variance)"] = df_tableau.get(COL_EV, 0) - df_tableau[COL_AC]
 
     # Sauvegarder en CSV et Excel
     csv_file = f"{nom_base}.csv"

@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 # Ajouter le répertoire parent au path pour importer analyse
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -36,7 +37,7 @@ class TestLectureExport:
         assert len(result) == 2
         assert "Date de la pièce" in result.columns
         assert "Val./Devise objet" in result.columns
-        assert result["Val./Devise objet"].sum() == 40001.25
+        assert result["Val./Devise objet"].sum() == pytest.approx(40001.25)
 
     def test_lire_export_sap_fichier_inexistant(self):
         """Test avec un fichier qui n'existe pas"""
