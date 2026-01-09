@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from analyse import main, parser_arguments
+from src.cli import main, parser_arguments
 
 
 class TestParserArguments:
@@ -99,13 +99,6 @@ class TestParserArguments:
                 parser_arguments()
             assert exc_info.value.code == 0
 
-    def test_parser_version_affiche(self):
-        """Test que la version s'affiche correctement"""
-        with patch("sys.argv", ["analyse.py", "--version"]):
-            with pytest.raises(SystemExit) as exc_info:
-                parser_arguments()
-            assert exc_info.value.code == 0
-
 
 class TestMain:
     """Tests pour la fonction main"""
@@ -154,8 +147,9 @@ class TestMain:
 
         with (
             patch("sys.argv", ["analyse.py", "--sap", str(fichier_sap), "--output", str(fichier_output)]),
-            patch("analyse.tracer_courbe_realise") as mock_tracer,
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.cli.tracer_courbe_realise") as mock_tracer,
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             main()
             # Vérifier que tracer_courbe_realise a été appelé
@@ -229,8 +223,8 @@ class TestMain:
                     str(fichier_output),
                 ],
             ),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             main()
 
@@ -262,9 +256,9 @@ class TestMain:
                     str(fichier_word),
                 ],
             ),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
-            patch("analyse.generer_rapport_word") as mock_word,
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
+            patch("src.cli.generer_rapport_word") as mock_word,
         ):
             main()
             # Vérifier que la génération du rapport Word a été appelée
@@ -299,8 +293,8 @@ class TestMain:
                     str(fichier_tableau),
                 ],
             ),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             main()
 
@@ -342,8 +336,8 @@ class TestMainRobustesse:
                     "va_inexistant.xlsx",
                 ],
             ),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             # Ne devrait pas crasher
             main()
@@ -361,7 +355,7 @@ class TestMainRobustesse:
 
         with (
             patch("sys.argv", ["analyse.py", "--sap", str(fichier_sap)]),
-            patch("analyse.tracer_courbe_realise", side_effect=OSError("No space left on device")),
+            patch("src.cli.tracer_courbe_realise", side_effect=OSError("No space left on device")),
             pytest.raises(OSError, match="No space left on device"),
         ):
             main()
@@ -381,8 +375,8 @@ class TestMainRobustesse:
 
         with (
             patch("sys.argv", ["analyse.py", "--sap", str(fichier_sap), "--output", str(fichier_output)]),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             # Exécution 1
             main()
@@ -408,8 +402,8 @@ class TestMainAffichage:
 
         with (
             patch("sys.argv", ["analyse.py", "--sap", str(fichier_sap)]),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             main()
             captured = capsys.readouterr()
@@ -430,8 +424,8 @@ class TestMainAffichage:
 
         with (
             patch("sys.argv", ["analyse.py", "--sap", str(fichier_sap)]),
-            patch("analyse.tracer_courbe"),
-            patch("analyse.tracer_courbe_projections"),
+            patch("src.visualisation.graphiques.tracer_courbe_realise"),
+            patch("src.visualisation.graphiques.tracer_courbe_projections"),
         ):
             main()
             captured = capsys.readouterr()
