@@ -286,4 +286,4 @@ EAC Reste à Plan = AC + (BAC - EV)
 
 ## Licence
 
-Ce projet est fourni tel quel pour un usage interne.
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.

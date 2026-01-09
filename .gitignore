@@ -22,8 +22,9 @@ htmlcov/
 # Garder les fichiers Markdown
 !*.md
 
-# Garder requirements.txt
+# Garder requirements.txt et LICENSE
 !requirements.txt
+!LICENSE
 
 # Garder les modèles Excel
 !*_model.xlsx
