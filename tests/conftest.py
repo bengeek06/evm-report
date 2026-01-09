@@ -1,14 +1,15 @@
 """
 Configuration pytest et fixtures communes
 """
-import pytest
-import pandas as pd
-from datetime import datetime
-import os
 import sys
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
+import pytest
 
 # Ajouter le répertoire parent au path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 @pytest.fixture
@@ -54,7 +55,7 @@ def sample_va():
         "Montant planifié": [100000, 200000, 250000],
         "Cumul planifié": [100000, 300000, 550000]
     }
-    
+
     # Ajouter des colonnes mensuelles avec pourcentages
     for i in range(1, 13):
         mois_date = datetime(2025, i, 1)
@@ -64,7 +65,7 @@ def sample_va():
             data[mois_date] = [1.0, 0.2 * (i - 3), 0.0]  # RCD fini, J1 progresse
         else:
             data[mois_date] = [1.0, 1.0, 0.25 * (i - 8)]  # RCD et J1 finis, J2 progresse
-    
+
     return pd.DataFrame(data)
 
 

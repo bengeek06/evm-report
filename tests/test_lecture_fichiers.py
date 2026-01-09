@@ -1,20 +1,20 @@
 """
 Tests pour les fonctions de lecture des fichiers Excel
 """
-import pytest
-import pandas as pd
-from datetime import datetime
 import sys
-import os
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 
 # Ajouter le répertoire parent au path pour importer analyse
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from analyse import lire_export_sap, lire_planned_value, lire_valeur_acquise, lire_forecast
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from analyse import lire_export_sap, lire_forecast, lire_planned_value, lire_valeur_acquise
 
 
 class TestLectureExport:
     """Tests pour la lecture du fichier export SAP"""
-    
+
     def test_lire_export_sap_fichier_existant(self, tmp_path):
         """Test de lecture d'un fichier SAP valide"""
         # Créer un fichier Excel temporaire
@@ -25,21 +25,21 @@ class TestLectureExport:
             "Autre colonne": ["A", "B"]
         })
         df.to_excel(fichier, index=False)
-        
+
         # Tester la lecture
         result = lire_export_sap(str(fichier))
-        
+
         assert result is not None
         assert len(result) == 2
         assert "Date de la pièce" in result.columns
         assert "Val./Devise objet" in result.columns
         assert result["Val./Devise objet"].sum() == 40001.25
-    
+
     def test_lire_export_sap_fichier_inexistant(self):
         """Test avec un fichier qui n'existe pas"""
         result = lire_export_sap("fichier_inexistant.xlsx")
         assert result is None
-    
+
     def test_lire_export_sap_colonnes_manquantes(self, tmp_path):
         """Test avec des colonnes manquantes"""
         fichier = tmp_path / "export_invalide.xlsx"
@@ -48,7 +48,7 @@ class TestLectureExport:
             "Autre colonne": ["A", "B", "C"]
         })
         df.to_excel(fichier, index=False)
-        
+
         result = lire_export_sap(str(fichier))
         # Le fichier est lu mais les colonnes seront vérifiées plus tard dans main()
         assert result is not None
@@ -56,7 +56,7 @@ class TestLectureExport:
 
 class TestLecturePlannedValue:
     """Tests pour la lecture du fichier Planned Value"""
-    
+
     def test_lire_pv_valide(self, tmp_path):
         """Test de lecture d'un fichier PV valide"""
         fichier = tmp_path / "pv_test.xlsx"
@@ -68,14 +68,14 @@ class TestLecturePlannedValue:
             "Cumul planifié": [100000, 300000, 550000]
         })
         df.to_excel(fichier, index=False)
-        
+
         result = lire_planned_value(str(fichier))
-        
+
         assert result is not None
         assert len(result) == 3
         assert list(result["Jalon"]) == ["RCD", "J1", "J2"]
         assert result["Montant planifié"].sum() == 550000
-    
+
     def test_lire_pv_fichier_inexistant(self):
         """Test avec un fichier PV inexistant"""
         result = lire_planned_value("pv_inexistant.xlsx")
@@ -84,7 +84,7 @@ class TestLecturePlannedValue:
 
 class TestLectureValeurAcquise:
     """Tests pour la lecture du fichier Valeur Acquise"""
-    
+
     def test_lire_va_valide(self, tmp_path):
         """Test de lecture d'un fichier VA valide"""
         fichier = tmp_path / "va_test.xlsx"
@@ -97,13 +97,13 @@ class TestLectureValeurAcquise:
         }
         df = pd.DataFrame(data)
         df.to_excel(fichier, index=False)
-        
+
         result = lire_valeur_acquise(str(fichier))
-        
+
         assert result is not None
         assert len(result) == 2
         assert "Jalon" in result.columns
-    
+
     def test_lire_va_fichier_inexistant(self):
         """Test avec un fichier VA inexistant"""
         result = lire_valeur_acquise("va_inexistant.xlsx")
@@ -112,7 +112,7 @@ class TestLectureValeurAcquise:
 
 class TestLectureForecast:
     """Tests pour la lecture du fichier Forecast"""
-    
+
     def test_lire_forecast_valide(self, tmp_path):
         """Test de lecture d'un fichier forecast valide"""
         fichier = tmp_path / "forecast_test.xlsx"
@@ -124,14 +124,14 @@ class TestLectureForecast:
             "Commentaire": ["Test 1", "Test 2"]
         })
         df.to_excel(fichier, index=False)
-        
+
         result = lire_forecast(str(fichier))
-        
+
         assert result is not None
         assert len(result) == 2
         assert "Jalon" in result.columns
         assert "EAC (€)" in result.columns
-    
+
     def test_lire_forecast_fichier_inexistant(self):
         """Test avec un fichier forecast inexistant"""
         result = lire_forecast("forecast_inexistant.xlsx")
