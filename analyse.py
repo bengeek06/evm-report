@@ -392,7 +392,7 @@ def calculer_earned_value(df_pv, df_va):
 
                 if pourcentage_actuel > 0:
                     ev_jalon = montant_jalon * pourcentage_actuel
-                    print(f"  {jalon}: {pourcentage_actuel*100:.1f}% -> {ev_jalon:.2f}€")
+                    print(f"  {jalon}: {pourcentage_actuel * 100:.1f}% -> {ev_jalon:.2f}€")
 
     if not ev_par_mois:
         print("\n⚠️  Aucune donnée EV calculée")
@@ -1053,7 +1053,7 @@ def tracer_courbe_projections(depenses_cumulees, ev_cumulee, projections, fichie
             # Ajouter annotation sur le point final
             if len(dates_proj) > 0:
                 plt.annotate(
-                    f'{eac_final:.0f} k€\n{date_fin.strftime("%m/%Y")}',
+                    f"{eac_final:.0f} k€\n{date_fin.strftime('%m/%Y')}",
                     xy=(dates_proj[-1], series.to_numpy()[-1]),
                     xytext=(10, 10),
                     textcoords="offset points",
@@ -1320,12 +1320,12 @@ def generer_rapport_word(
 
     if cpi < 1:
         doc.add_paragraph(
-            f"⚠ L'efficacité des coûts est de {cpi*100:.1f}% (chaque euro dépensé génère {cpi:.2f} € de valeur).",
+            f"⚠ L'efficacité des coûts est de {cpi * 100:.1f}% (chaque euro dépensé génère {cpi:.2f} € de valeur).",
             style="List Bullet",
         )
     else:
         doc.add_paragraph(
-            f"✓ L'efficacité des coûts est de {cpi*100:.1f}% (chaque euro dépensé génère {cpi:.2f} € de valeur).",
+            f"✓ L'efficacité des coûts est de {cpi * 100:.1f}% (chaque euro dépensé génère {cpi:.2f} € de valeur).",
             style="List Bullet",
         )
 
@@ -1472,7 +1472,7 @@ def generer_rapport_word(
         for label, ecart, _eac_val in scenarios_ecarts:
             p = doc.add_paragraph(style="List Bullet")
             signe = "+" if ecart >= 0 else ""
-            run = p.add_run(f"  • {label}: {signe}{ecart:,.2f} € ({(ecart/budget_total)*100:+.1f}%)")
+            run = p.add_run(f"  • {label}: {signe}{ecart:,.2f} € ({(ecart / budget_total) * 100:+.1f}%)")
             if ecart < 0:
                 run.font.color.rgb = RGBColor(231, 76, 60)  # Rouge
             else:
