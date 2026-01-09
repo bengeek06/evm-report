@@ -792,7 +792,6 @@ def tracer_courbe(
     plt.tight_layout()
     plt.savefig(fichier_sortie, dpi=300, bbox_inches="tight")
     print(f"Graphique sauvegardé: {fichier_sortie}")
-    plt.show()
 
 
 def tracer_courbe_realise(
@@ -987,13 +986,11 @@ def tracer_courbe_projections(depenses_cumulees, ev_cumulee, projections, fichie
 
     # Conversion en k€ pour une meilleure lisibilité
     depenses_ke = depenses_cumulees / 1000
-    ev_ke = ev_cumulee / 1000
 
     # Conversion des périodes en dates pour l'affichage
     dates_depenses = [periode.to_timestamp() for periode in depenses_cumulees.index]
-    dates_ev = [periode.to_timestamp() for periode in ev_cumulee.index]
 
-    # Tracé de l'historique AC et EV
+    # Tracé de l'historique AC
     plt.plot(
         dates_depenses,
         depenses_ke.values,
@@ -1005,17 +1002,21 @@ def tracer_courbe_projections(depenses_cumulees, ev_cumulee, projections, fichie
         zorder=3,
     )
 
-    plt.plot(
-        dates_ev,
-        ev_ke.values,
-        marker="^",
-        linewidth=2.5,
-        markersize=8,
-        label="EV historique (Valeur acquise)",
-        color="#2ecc71",
-        linestyle="-.",
-        zorder=2,
-    )
+    # Tracé de l'EV si disponible
+    if ev_cumulee is not None:
+        ev_ke = ev_cumulee / 1000
+        dates_ev = [periode.to_timestamp() for periode in ev_cumulee.index]
+        plt.plot(
+            dates_ev,
+            ev_ke.values,
+            marker="^",
+            linewidth=2.5,
+            markersize=8,
+            label="EV historique (Valeur acquise)",
+            color="#2ecc71",
+            linestyle="-.",
+            zorder=2,
+        )
 
     # Couleurs et styles pour les projections
     couleurs = {"cpi": "#f39c12", "cpi_spi": "#9b59b6", "reste_plan": "#e67e22", "forecast": "#3498db"}

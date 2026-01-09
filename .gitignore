@@ -20,5 +20,8 @@ datas/
 
 # Ignorer les rapports générés
 reports/
+*.png
+*.csv
+tableau_evm.*
 
 .vscode/

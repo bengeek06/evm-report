@@ -53,6 +53,12 @@ class TestLectureExport:
         # Le fichier est lu mais les colonnes seront vérifiées plus tard dans main()
         assert result is not None
 
+    def test_lire_export_sap_exception_generale(self):
+        """Test d'une exception générale lors de la lecture"""
+        # Passer un chemin invalide (pas un fichier Excel)
+        result = lire_export_sap("/dev/null")
+        assert result is None
+
 
 class TestLecturePlannedValue:
     """Tests pour la lecture du fichier Planned Value"""
@@ -83,6 +89,11 @@ class TestLecturePlannedValue:
         result = lire_planned_value("pv_inexistant.xlsx")
         assert result is None
 
+    def test_lire_pv_exception_generale(self):
+        """Test d'une exception générale lors de la lecture PV"""
+        result = lire_planned_value("/dev/null")
+        assert result is None
+
 
 class TestLectureValeurAcquise:
     """Tests pour la lecture du fichier Valeur Acquise"""
@@ -109,6 +120,11 @@ class TestLectureValeurAcquise:
     def test_lire_va_fichier_inexistant(self):
         """Test avec un fichier VA inexistant"""
         result = lire_valeur_acquise("va_inexistant.xlsx")
+        assert result is None
+
+    def test_lire_va_exception_generale(self):
+        """Test d'une exception générale lors de la lecture VA"""
+        result = lire_valeur_acquise("/dev/null")
         assert result is None
 
 
@@ -139,4 +155,9 @@ class TestLectureForecast:
     def test_lire_forecast_fichier_inexistant(self):
         """Test avec un fichier forecast inexistant"""
         result = lire_forecast("forecast_inexistant.xlsx")
+        assert result is None
+
+    def test_lire_forecast_exception_generale(self):
+        """Test d'une exception générale lors de la lecture forecast"""
+        result = lire_forecast("/dev/null")
         assert result is None

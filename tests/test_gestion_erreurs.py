@@ -101,8 +101,8 @@ class TestErreursDonnees:
 
     def test_dataframe_none_earned_value(self):
         """Test calculer_earned_value avec None"""
-        with pytest.raises((AttributeError, TypeError)):
-            calculer_earned_value(None, None, None)
+        result = calculer_earned_value(None, None)
+        assert result is None
 
     def test_dates_none_earned_value(self):
         """Test calculer_earned_value avec DataFrame None"""

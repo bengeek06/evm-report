@@ -173,3 +173,42 @@ class TestCalculerEarnedValue:
 
         result = calculer_earned_value(df_pv, None)
         assert result is None
+
+    def test_ev_sans_colonne_jalon_pv(self):
+        """Test quand la colonne Jalon est absente dans PV"""
+        df_pv = pd.DataFrame(
+            {
+                "Date": [datetime(2025, 3, 31)],
+                "Montant planifié": [100000],
+            }
+        )
+
+        df_va = pd.DataFrame(
+            {
+                "Jalon": ["RCD"],
+                datetime(2025, 1, 1): [0.5],
+            }
+        )
+
+        result = calculer_earned_value(df_pv, df_va)
+        assert result is None
+
+    def test_ev_sans_colonne_jalon_va(self):
+        """Test quand la colonne Jalon est absente dans VA"""
+        df_pv = pd.DataFrame(
+            {
+                "Jalon": ["RCD"],
+                "Date": [datetime(2025, 3, 31)],
+                "Montant planifié": [100000],
+            }
+        )
+
+        df_va = pd.DataFrame(
+            {
+                "Date": [datetime(2025, 3, 31)],
+                datetime(2025, 1, 1): [0.5],
+            }
+        )
+
+        result = calculer_earned_value(df_pv, df_va)
+        assert result is None
