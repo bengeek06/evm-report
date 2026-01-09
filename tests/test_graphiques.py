@@ -16,7 +16,7 @@ from analyse import tracer_courbe, tracer_courbe_projections
 class TestTracerCourbe:
     """Tests pour la fonction tracer_courbe"""
 
-    def test_tracer_courbe_ac_seulement(self, tmp_path):
+    def test_tracer_courbe_ac_seulement(self, tmp_path: Path) -> None:
         """Test avec seulement les dépenses réelles (AC)"""
         fichier = tmp_path / "graphique.png"
 
@@ -30,7 +30,7 @@ class TestTracerCourbe:
             tracer_courbe(depenses, fichier_sortie=str(fichier))
             mock_save.assert_called_once()
 
-    def test_tracer_courbe_ac_pv(self, tmp_path):
+    def test_tracer_courbe_ac_pv(self, tmp_path: Path) -> None:
         """Test avec AC et PV"""
         fichier = tmp_path / "graphique.png"
 
@@ -53,7 +53,7 @@ class TestTracerCourbe:
             tracer_courbe(depenses, pv, jalons, fichier_sortie=str(fichier))
             mock_save.assert_called_once()
 
-    def test_tracer_courbe_ac_pv_ev(self, tmp_path):
+    def test_tracer_courbe_ac_pv_ev(self, tmp_path: Path) -> None:
         """Test avec AC, PV et EV"""
         fichier = tmp_path / "graphique.png"
 
@@ -76,7 +76,7 @@ class TestTracerCourbe:
             tracer_courbe(depenses, pv, None, ev, fichier_sortie=str(fichier))
             mock_save.assert_called_once()
 
-    def test_tracer_courbe_toutes_donnees(self, tmp_path):
+    def test_tracer_courbe_toutes_donnees(self, tmp_path: Path) -> None:
         """Test avec toutes les données (AC, PV, EV, jalons, EAC)"""
         fichier = tmp_path / "graphique_complet.png"
 
@@ -113,7 +113,7 @@ class TestTracerCourbe:
 class TestTracerProjections:
     """Tests pour la fonction tracer_courbe_projections"""
 
-    def test_tracer_projections_base(self, tmp_path):
+    def test_tracer_projections_base(self, tmp_path: Path) -> None:
         """Test de base avec des projections"""
         fichier = tmp_path / "projections.png"
 
@@ -142,7 +142,7 @@ class TestTracerProjections:
             tracer_courbe_projections(depenses, ev, projections, str(fichier))
             mock_save.assert_called_once()
 
-    def test_tracer_projections_toutes_donnees(self, tmp_path):
+    def test_tracer_projections_toutes_donnees(self, tmp_path: Path) -> None:
         """Test avec tous les scénarios"""
         fichier = tmp_path / "projections_complet.png"
 
