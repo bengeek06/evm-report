@@ -1,5 +1,42 @@
 # Changelog - Analyse EVM
 
+## Version 2.1 - Tests Unitaires
+
+### Nouvelles fonctionnalités
+
+#### 1. Suite de tests unitaires pytest
+Ajout d'une suite complète de tests couvrant les fonctions principales :
+
+- **27 tests unitaires** répartis en 4 fichiers
+- Tests de lecture des fichiers Excel (SAP, PV, VA, Forecast)
+- Tests des calculs EVM (AC, PV interpolée, EV)
+- Tests des projections automatiques (3 méthodes)
+- Tests d'intégration du workflow complet
+- **Couverture** : 34% du code principal
+
+#### 2. Infrastructure de tests
+- Configuration pytest avec fixtures réutilisables
+- Tests utilisant des fichiers temporaires (pas de dépendance externe)
+- Pattern AAA (Arrange-Act-Assert) pour tous les tests
+- Documentation complète des tests dans `tests/README.md`
+
+### Fichiers ajoutés
+- `tests/__init__.py` : Package de tests
+- `tests/conftest.py` : Fixtures pytest (7 fixtures)
+- `tests/test_lecture_fichiers.py` : Tests de lecture (9 tests)
+- `tests/test_calculs_evm.py` : Tests de calculs (8 tests)
+- `tests/test_projections.py` : Tests de projections (6 tests)
+- `tests/test_integration.py` : Tests d'intégration (4 tests)
+- `tests/README.md` : Documentation des tests
+- `TESTS_SUMMARY.md` : Résumé complet des résultats
+
+### Modifications
+- Mise à jour de `requirements.txt` : Ajout de pytest>=7.4.0 et pytest-cov>=4.1.0
+- Mise à jour de `.gitignore` : Ignore `__pycache__/`, `.pytest_cache/`, `htmlcov/`, `.coverage`
+- Mise à jour de `README.md` : Section tests avec instructions
+
+---
+
 ## Version 2.0 - Projections Automatiques et Double Graphique
 
 ### Nouvelles fonctionnalités

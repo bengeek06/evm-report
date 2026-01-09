@@ -229,6 +229,35 @@ Voir [requirements.txt](requirements.txt) :
 - openpyxl >= 3.1.0
 - matplotlib >= 3.7.0
 - python-docx >= 0.8.11
+- pytest >= 7.4.0 (tests)
+- pytest-cov >= 4.1.0 (tests)
+
+## Tests
+
+Le projet inclut une suite de tests unitaires complète avec pytest.
+
+### Exécuter les tests
+
+```bash
+# Tous les tests
+pytest -v
+
+# Avec couverture de code
+pytest --cov=analyse --cov-report=term-missing
+
+# Rapport HTML de couverture
+pytest --cov=analyse --cov-report=html
+```
+
+### Résultats des tests
+
+- ✅ **27 tests unitaires** - Tous passent
+- 📊 **Couverture** : 34% du code principal
+- ⏱️ **Temps d'exécution** : ~1.5 secondes
+
+Pour plus de détails, consultez :
+- [tests/README.md](tests/README.md) - Documentation des tests
+- [TESTS_SUMMARY.md](TESTS_SUMMARY.md) - Résumé complet des tests
 
 ## Changelog
 
