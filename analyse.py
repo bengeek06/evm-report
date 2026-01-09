@@ -13,7 +13,13 @@ from src.calculs import (
     traiter_planned_value,
 )
 from src.cli import main, parser_arguments
-from src.io import generer_tableau_comparatif, lire_export_sap, lire_forecast, lire_planned_value, lire_valeur_acquise
+from src.evm_io import (
+    generer_tableau_comparatif,
+    lire_export_sap,
+    lire_forecast,
+    lire_planned_value,
+    lire_valeur_acquise,
+)
 from src.visualisation import generer_rapport_word, tracer_courbe, tracer_courbe_projections, tracer_courbe_realise
 
 # Exposer toutes les fonctions pour la compatibilité

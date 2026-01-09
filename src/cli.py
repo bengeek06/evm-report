@@ -12,7 +12,13 @@ from src.calculs import (
     calculer_projections_automatiques,
     traiter_planned_value,
 )
-from src.io import generer_tableau_comparatif, lire_export_sap, lire_forecast, lire_planned_value, lire_valeur_acquise
+from src.evm_io import (
+    generer_tableau_comparatif,
+    lire_export_sap,
+    lire_forecast,
+    lire_planned_value,
+    lire_valeur_acquise,
+)
 from src.visualisation import generer_rapport_word, tracer_courbe_projections, tracer_courbe_realise
 
 
