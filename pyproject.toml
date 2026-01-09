@@ -40,6 +40,9 @@ dependencies = [
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
 ]
 
 [project.urls]
@@ -72,3 +75,25 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
 ]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "DTZ", "T10", "ICN", "PIE", "PT", "RET", "SIM", "ARG", "PTH", "PD", "PL", "NPY"]
+ignore = ["E501", "PLR0913", "PLR2004", "PLR0912", "PLR0915", "C901"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+ignore_missing_imports = true
+
