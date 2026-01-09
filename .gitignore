@@ -1,34 +1,17 @@
-# Ignorer tout par défaut
-*
-
 # Ignorer les caches Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
+# Ignorer les venv
+.venv/
+venv/
+
 # Ignorer les fichiers temporaires de pytest
 .pytest_cache/
 htmlcov/
 .coverage
 
-# Garder les répertoires de code source
-!tests/
-!tests/**
-
-# Garder les fichiers Python
-!*.py
-
-# Garder les fichiers Markdown
-!*.md
-
-# Garder requirements.txt et LICENSE
-!requirements.txt
-!LICENSE
-
-# Garder les modèles Excel
-!*_model.xlsx
-
-# Garder le .gitignore lui-même
-!.gitignore
-
+# Ignorer les datas
+datas/

@@ -44,7 +44,7 @@ def sample_pv():
 @pytest.fixture
 def sample_va():
     """Fixture pour un fichier VA exemple"""
-    data = {
+    data: dict[str | datetime, list] = {
         "Jalon": ["RCD", "J1", "J2"],
         "Date": [
             datetime(2025, 3, 31),

@@ -1,9 +1,6 @@
 """
 Tests d'intégration pour le workflow complet
 """
-import pytest
-import pandas as pd
-from datetime import datetime
 import sys
 import os
 
@@ -66,7 +63,7 @@ class TestWorkflowComplet:
         projections = calculer_projections_automatiques(ac, ev, pv, df_pv)
         assert projections is not None
         
-        projections_data, series_projections, date_fin = projections
+        projections_data, _, _ = projections
         assert len(projections_data) == 3  # CPI, CPI_SPI, RESTE_PLAN
         assert all(k in projections_data for k in ['CPI', 'CPI_SPI', 'RESTE_PLAN'])
     
@@ -95,7 +92,9 @@ class TestWorkflowComplet:
         ac = calculer_depenses_cumulees(df_sap, "Date de la pièce", "Val./Devise objet")
         
         df_pv = lire_planned_value(str(fichier_pv))
-        pv, jalons = traiter_planned_value(df_pv)
+        result_pv = traiter_planned_value(df_pv)
+        assert result_pv is not None
+        pv, _ = result_pv
         
         df_va = lire_valeur_acquise(str(fichier_va))
         ev = calculer_earned_value(df_pv, df_va)
@@ -121,13 +120,13 @@ class TestIndicateursEVM:
         ev_actuel = sample_ev_cumulee.iloc[-1]
         pv_actuel = sample_pv_cumulee.iloc[-1]
         
-        # CPI = EV / AC
+        # Calculate Cost Performance Index (earned value divided by actual cost)
         cpi = ev_actuel / ac_actuel
         assert cpi > 0
         # Dans cet exemple: EV=180k, AC=250k => CPI=0.72 < 1 (mauvais)
         assert cpi < 1
         
-        # SPI = EV / PV
+        # Calculate Schedule Performance Index (earned value divided by planned value)
         spi = ev_actuel / pv_actuel
         assert spi > 0
         # Dans cet exemple: EV=180k, PV=200k => SPI=0.9 < 1 (retard)
@@ -139,12 +138,12 @@ class TestIndicateursEVM:
         ev_actuel = sample_ev_cumulee.iloc[-1]
         pv_actuel = sample_pv_cumulee.iloc[-1]
         
-        # CV = EV - AC
+        # Calculate Cost Variance (earned value minus actual cost)
         cv = ev_actuel - ac_actuel
         # Dans cet exemple: CV = 180k - 250k = -70k (dépassement)
         assert cv < 0
         
-        # SV = EV - PV
+        # Calculate Schedule Variance (earned value minus planned value)
         sv = ev_actuel - pv_actuel
         # Dans cet exemple: SV = 180k - 200k = -20k (retard)
         assert sv < 0

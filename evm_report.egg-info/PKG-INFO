@@ -1,3 +1,38 @@
+Metadata-Version: 2.4
+Name: evm-report
+Version: 2.1.0
+Summary: Analyse EVM automatisée avec calcul des indicateurs de performance, projections et rapports Word
+Author-email: Benjamin <bengeek06@users.noreply.github.com>
+License: MIT
+Project-URL: Homepage, https://github.com/bengeek06/evm-report
+Project-URL: Repository, https://github.com/bengeek06/evm-report
+Project-URL: Issues, https://github.com/bengeek06/evm-report/issues
+Keywords: evm,earned-value-management,project-management,reporting,analysis
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Office/Business :: Financial
+Classifier: Topic :: Office/Business :: Scheduling
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: openpyxl>=3.1.0
+Requires-Dist: matplotlib>=3.7.0
+Requires-Dist: python-docx>=0.8.11
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Dynamic: license-file
+
 # Analyse EVM (Earned Value Management)
 
 Outil d'analyse de la performance de projets selon la méthodologie EVM (Earned Value Management).
