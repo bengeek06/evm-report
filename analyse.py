@@ -5,10 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 import argparse
-import sys
 import os
 from docx import Document
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 def parser_arguments():
@@ -269,12 +268,12 @@ def calculer_earned_value(df_pv, df_va):
             break
     
     if colonne_date_pv is None or colonne_montant_pv is None:
-        print(f"\n⚠️  Impossible de calculer l'EV: colonnes PV manquantes")
+        print("\n⚠️  Impossible de calculer l'EV: colonnes PV manquantes")
         return None
     
     # Identification de la colonne Jalon
     if 'Jalon' not in df_pv.columns or 'Jalon' not in df_va.columns:
-        print(f"\n⚠️  Colonne 'Jalon' manquante dans PV ou VA")
+        print("\n⚠️  Colonne 'Jalon' manquante dans PV ou VA")
         return None
     
     # Calcul de l'EV mois par mois
@@ -290,10 +289,10 @@ def calculer_earned_value(df_pv, df_va):
             date_col = pd.to_datetime(col)
             mois = date_col.to_period('M')
             tous_les_mois.add(mois)
-        except:
+        except Exception:
             continue
     
-    tous_les_mois = sorted(list(tous_les_mois))
+    tous_les_mois = sorted(tous_les_mois)
     
     # Pour chaque mois, calculer l'EV totale
     ev_par_mois = {}
@@ -325,7 +324,7 @@ def calculer_earned_value(df_pv, df_va):
                         pourcentage = row_va[col]
                         if pd.notna(pourcentage):
                             pourcentage_actuel = max(pourcentage_actuel, pourcentage)
-                except:
+                except Exception:
                     continue
             
             # Calculer l'EV pour ce jalon (pourcentage est déjà en décimal: 1.0 = 100%)
@@ -362,7 +361,7 @@ def calculer_earned_value(df_pv, df_va):
                             pourcentage = row_va[col]
                             if pd.notna(pourcentage):
                                 pourcentage_actuel = max(pourcentage_actuel, pourcentage)
-                    except:
+                    except Exception:
                         continue
                 
                 if pourcentage_actuel > 0:
@@ -370,7 +369,7 @@ def calculer_earned_value(df_pv, df_va):
                     print(f"  {jalon}: {pourcentage_actuel*100:.1f}% -> {ev_jalon:.2f}€")
     
     if not ev_par_mois:
-        print(f"\n⚠️  Aucune donnée EV calculée")
+        print("\n⚠️  Aucune donnée EV calculée")
         return None
     
     # Convertir en Series et trier
@@ -464,7 +463,7 @@ def calculer_projections_automatiques(depenses_cumulees, ev_cumulee, pv_cumulee,
             for i, mois in enumerate(mois_projection):
                 if mois > dernier_mois:
                     valeur_actuelle += increment
-                    serie[mois] = valeur_actuelle
+                    serie[mois] = valeur_actuelle  # type: ignore[index]
         
         serie = serie.sort_index()
         series_projections[methode] = serie
@@ -519,7 +518,7 @@ def calculer_eac_projete(ev_cumulee, df_forecast, df_pv):
     for info in eac_par_jalon.values():
         mois_projection.add(info['date'])
     
-    mois_projection = sorted(list(mois_projection))
+    mois_projection = sorted(mois_projection)
     
     # Calculer l'EAC cumulé mois par mois
     eac_par_mois = {}
@@ -928,7 +927,7 @@ def generer_tableau_comparatif(depenses_cumulees, pv_cumulee=None, ev_cumulee=No
     if ev_cumulee is not None:
         toutes_periodes.update(ev_cumulee.index)
     
-    toutes_periodes = sorted(list(toutes_periodes))
+    toutes_periodes = sorted(toutes_periodes)
     
     # Créer le tableau
     data = {
@@ -1352,12 +1351,12 @@ def main():
     args = parser_arguments()
     
     print("=== Analyse des dépenses SAP ===\n")
-    print(f"Fichiers d'entrée:")
+    print("Fichiers d'entrée:")
     print(f"  - SAP:      {args.sap}")
     print(f"  - PV:       {args.pv}")
     print(f"  - VA:       {args.va}")
     print(f"  - Forecast: {args.forecast}")
-    print(f"\nFichiers de sortie:")
+    print("\nFichiers de sortie:")
     print(f"  - Graphique: {args.output}")
     print(f"  - Tableaux:  {args.tableau}.csv / {args.tableau}.xlsx\n")
     
@@ -1435,7 +1434,7 @@ def main():
     if df_forecast is not None and ev_cumulee is not None:
         result = calculer_eac_projete(ev_cumulee, df_forecast, df_pv)
         if result is not None:
-            eac_projete, jalons_forecast = result
+            eac_projete, _ = result
             # Ajouter la projection forecast au dictionnaire
             projections['forecast'] = {
                 'series': eac_projete,
